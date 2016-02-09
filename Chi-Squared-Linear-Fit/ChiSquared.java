@@ -33,13 +33,13 @@ class ChiSquared{
 
 
 	// For the given xvalues this assumes a quadratic relation and makes predictions
-	public static Matrix makePredictions(Matrix xvalues, double a, double m, double c){
+	public static Matrix makePredictions(Matrix xvalues, double m, double c){
 
 		Matrix prediction = new Matrix(1, xvalues.getColumns());
 
 		for(int i = 0; i<xvalues.getColumns();i++){
 
-			double p = a * xvalues.getElement(0,i)* xvalues.getElement(0,i) + m * xvalues.getElement(0,i) + c;
+			double p =  m * xvalues.getElement(0,i) + c;
 
 			prediction.setElement(0,i, p);
 		}
@@ -104,32 +104,28 @@ class ChiSquared{
 		double min = 1000;
 		double mopt = 0;
 		double copt = 0;
-		double aopt = 0;
 
 		for(int m = -100; m<100;m++){
 			for(int c = -100; c<100; c++){
-				for(int a = -100; a<100; a++){
+
 					double intercept = (double) c;
 					double gradient = (double) m;
-					double quadratic = (double) a;
 
-					Matrix prediction = makePredictions(data.get("xvalues"), gradient, intercept, quadratic);
+					Matrix prediction = makePredictions(data.get("xvalues"), gradient, intercept);
 					Matrix chisq = computeChiSquare(data.get("yvalues"), prediction, data.get("errors"));
 
 					if(chisq.getElement(0,0) < min){
 						min = chisq.getElement(0,0);
 						mopt = m;
 						copt = c;
-						aopt = a;
 					}
 				}
 			}
-		}
+		
 
 		results.put("minChi", min);
 		results.put("minm", mopt);
 		results.put("minc", copt);
-		results.put("mina", aopt);
 
 		return results;
 
@@ -164,7 +160,6 @@ class ChiSquared{
 		        FileWriter writer = new FileWriter(file); 
 		        writer.write(String.valueOf(result.get("minm"))+ "\n");
 		        writer.write(String.valueOf(result.get("minc"))+ "\n");
-		        writer.write(String.valueOf(result.get("mina")));
 		        writer.flush();
 		        writer.close();
 		

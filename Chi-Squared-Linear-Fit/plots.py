@@ -30,10 +30,17 @@ xp = [x1 for x1 in range(int(min(x)), int(max(x))+1,1)]
 yp = [m*XP+c for XP in xp]
 
 
+# use numpy's regression module
+regression = np.polyfit(x, y, 1)
+xreg = [regression[0] * xx + regression[1] for xx in x]
+
+
 plt.scatter(x, y)
 plt.errorbar(x,y, yerr= errors, linestyle="None")
-plt.plot(xp,yp)
+plt.plot(xp,yp, label = "computed regression")
+plt.plot(x, xreg, label= "Scipi regression")
 plt.title("Best linear fit to the data")
 plt.xlabel(xaxis)
 plt.ylabel(yaxis)
+legend = plt.legend(loc='upper left')
 plt.show()
